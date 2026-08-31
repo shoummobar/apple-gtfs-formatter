@@ -1,4 +1,4 @@
-# GTFS trip_headsign Apple Manager
+# GTFS Apple HeadSign Manager
 
 A lightweight Python tool that converts Google-ready GTFS feeds into Apple Maps-ready GTFS feeds while keeping the original GTFS structure intact.
 
@@ -25,7 +25,7 @@ The generator changes only the fields that are intended to be Apple-specific and
 
 The working directory is intentionally minimal:
 
-```text
+```
 GTFS_Apple_HeadSign_Manager/
 ├── Base GTFS/
 │   ├── feed01.zip
@@ -49,7 +49,7 @@ No additional data folders are required for normal use.
 
 Whenever a new Google-ready release is available, replace the ZIP files inside:
 
-```text
+```
 Base GTFS/
 ```
 
@@ -59,7 +59,7 @@ The feeds may be renamed or replaced. Existing bindings are not tied to the phys
 
 Run:
 
-```text
+```
 Avvia_Manager.bat
 ```
 
@@ -67,27 +67,23 @@ Avvia_Manager.bat
 
 Click:
 
-```text
-AGGIORNA MAPPATURA
-```
+**AGGIORNA MAPPATURA**
 
 The manager scans the current GTFS feeds and updates `Mappa_Headsign.xlsx`.
 
-New headsigns are added automatically.
-
-Previously known headsigns keep their existing Apple mapping.
-
-HeadSigns that disappear from the current feeds are retained as historical/inactive entries rather than being deleted.
+- New headsigns are added automatically.
+- Previously known headsigns keep their existing Apple mapping.
+- HeadSigns that disappear from the current feeds are retained as historical/inactive entries rather than being deleted.
 
 ### 4. Review the Excel mapping
 
 The main sheet is organized by feed, with visual separation between feeds.
 
-For headSigns:
+For headsigns:
 
-- `Google trip_headsign` contains the source value.
-- `Apple trip_headsign (Override)` is the manual Apple value.
-- `Default Apple` contains the automatically generated value.
+- **Google trip_headsign** contains the source value.
+- **Apple trip_headsign (Override)** is the manual Apple value.
+- **Default Apple** contains the automatically generated value.
 - the override wins whenever it is filled;
 - if the override is empty, the default is used.
 
@@ -101,13 +97,11 @@ Before generating the feeds, save and completely close `Mappa_Headsign.xlsx`.
 
 Click:
 
-```text
-GENERA APPLE
-```
+**GENERA APPLE**
 
 The manager creates the Apple-ready ZIP files in:
 
-```text
+```
 Apple/
 ```
 
@@ -115,7 +109,7 @@ Apple/
 
 Bindings are intentionally persistent.
 
-They are not based on:
+They are **not** based on:
 
 - the ZIP filename;
 - the order of the feeds;
@@ -126,30 +120,23 @@ This means that normal feed replacement does not require rebuilding the mappings
 
 A headsign that returns after being absent can recover its previous mapping when its stable key can be resolved again.
 
-## Smart `trip_headsign` formatting
+## Smart trip_headsign formatting
 
-The headsign formatter is deliberately conservative.
+This tool was developed for a specific GTFS workflow in which the municipality name within each `trip_headsign` value was provided in uppercase, while the remaining service-specific text (stop names, route qualifiers, acronyms, road codes, etc.) was already correctly formatted.
 
-The goal is not to rewrite the whole string blindly. It recognizes the patterns that should remain uppercase or structurally unchanged and converts normal uppercase text into readable Title Case.
+Because of this, the headsign formatter is deliberately conservative: its job is to normalize only the municipality portion of the string, converting it from uppercase into readable Title Case, without unnecessarily altering acronyms, abbreviations, road codes, Roman numerals, or any other formatting that was already correct in the source feed.
+
+The goal is not to rewrite the whole string blindly. It recognizes the patterns that should remain uppercase or structurally unchanged and converts only the municipality-name portion of uppercase text into readable Title Case.
 
 Typical examples:
 
-```text
-VARESE FN/FS Aut., Kennedy
-→ Varese FN/FS Aut., Kennedy
-
-REMEDELLO SOPRA ITAS
-→ Remedello Sopra ITAS
-
-RIVA DEL GARDA Autostazione
-→ Riva del Garda Autostazione
-
-ROE' VOLCIANO M.te Covolo
-→ Roè Volciano M.te Covolo
-
-CANTU' CERM. FS, Stazione
-→ Cantù Cerm. FS, Stazione
-```
+| Input | Output |
+|---|---|
+| `VARESE FN/FS Aut., Kennedy` | `Varese FN/FS Aut., Kennedy` |
+| `REMEDELLO SOPRA ITAS` | `Remedello Sopra ITAS` |
+| `RIVA DEL GARDA Autostazione` | `Riva del Garda Autostazione` |
+| `ROE' VOLCIANO M.te Covolo` | `Roè Volciano M.te Covolo` |
+| `CANTU' CERM. FS, Stazione` | `Cantù Cerm. FS, Stazione` |
 
 The engine preserves patterns such as:
 
@@ -168,10 +155,10 @@ Italian apostrophe-based accented vowels are normalized in both `trip_headsign` 
 
 Examples:
 
-```text
+```
 CANTU' → CANTÙ
 Cantu' → Cantù
-ROE' → ROÈ
+ROE'   → ROÈ
 ```
 
 For stop names, this normalization does not apply the headsign Title Case engine. The original stop-name casing is otherwise preserved.
@@ -191,11 +178,11 @@ This avoids confusing "most visited stop" with "terminal stop".
 
 ## Google Maps links
 
-The `APRI MAPS` links are generated from coordinates only.
+The **APRI MAPS** links are generated from coordinates only.
 
 Example:
 
-```text
+```
 https://www.google.com/maps/search/?api=1&query=45.123456,10.654321
 ```
 
@@ -216,7 +203,7 @@ Other GTFS files and fields are copied unchanged.
 
 The application is designed for Windows and uses Python together with the libraries installed by:
 
-```text
+```
 install_dependencies.bat
 ```
 
@@ -224,12 +211,10 @@ Typical dependencies include Excel/COM integration and ZIP/CSV processing suppor
 
 ## Running from source
 
-```text
-1. Put the feeds in Base GTFS/
-2. Run install_dependencies.bat (first setup only)
-3. Run Avvia_Manager.bat
-4. Click AGGIORNA MAPPATURA
+1. Put the feeds in `Base GTFS/`
+2. Run `install_dependencies.bat` (first setup only)
+3. Run `Avvia_Manager.bat`
+4. Click **AGGIORNA MAPPATURA**
 5. Edit the Excel mapping when necessary
 6. Save and close Excel
-7. Click GENERA APPLE
-```
+7. Click **GENERA APPLE**
